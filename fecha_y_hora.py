@@ -51,6 +51,23 @@ class FechaYHora:
                     self.validada = True
 
     @staticmethod
+    def fecha_valida(cadena):
+        match = er_tiempo.fullmatch(cadena)
+        if match:
+            if match['formato1']:
+                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], self.segundos)
+
+            if match['formato2']:
+                if match['franja'] == "PM":
+                    match['hora'] += 12
+                match['mes'] = FechaYHora.transformar_mes_int(match['mes'])
+                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], 0)
+                    
+            if match['formato3']:
+                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], match['segundos'])
+        return False
+
+    @staticmethod
     def es_bisiesto(año):
         return año % 4 == 0 and (not(año % 100 == 0) or año % 400 == 0)
     @staticmethod
