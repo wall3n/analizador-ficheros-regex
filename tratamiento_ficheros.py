@@ -6,7 +6,7 @@ from fecha_y_hora import FechaYHora
 from coordenadas import Coordenadas
 from producto import Producto
 
-re_linea = regex.compile(r"(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*)\n?")
+re_linea = regex.compile(r"(.*)\s*;\s*(.*)\*;\s*(.*)\s*;\s*(.*)\s*;\s*(.*)\s*;\s*(.*)\n?")
 
 class GestorFicheros:
 
