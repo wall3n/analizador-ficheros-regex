@@ -1,8 +1,9 @@
 import regex
 
+tlf1 = r"(\d{3})\s(\d{3})\s(\d{3})"
+re_tlf = regex.compile(tlf1)
+
 class TLF:
-    tlf1 = r"(\d{3})\s(\d{3})\s(\d{3})"
-    re_tlf = regex.compile(tlf1)
 
     def __init__(self):
         self.tlf = ''

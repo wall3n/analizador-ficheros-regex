@@ -1,3 +1,4 @@
+from os import error
 import regex
 from tlf import TLF
 from dni import DNI 
@@ -5,8 +6,13 @@ from fecha_y_hora import FechaYHora
 from coordenadas import Coordenadas
 from producto import Producto
 
+re_linea = regex.compile(r"(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*)\n?")
+
 class GestorFicheros:
-    re_linea = regex.compile(r"(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*);\s*(.*)\n?")
+
+    def __init__(self):
+        self.archivo = ""
+
 
     @staticmethod
     def validar_linea(linea):
@@ -44,7 +50,8 @@ class GestorFicheros:
                     print(f'Linea {indice} incorrecta')
                 else:
                     lineas_validadas.append(linea_validada)
-        except:
+        except error:
+            print(error)
             print(f'Error leyendo {archivo}')
             exit(2)
 

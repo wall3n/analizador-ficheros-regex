@@ -1,11 +1,12 @@
 import regex
 
+f_formato1 = r"(?P<formato1>(?P<ano>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})\s(?P<hora>\d{2}):(?P<minutos>\d{2}))"
+f_formato2 = r"(?P<formato2>(?P<mes>[A-Z][a-z]+)\s(?P<dia>\d{1,2}),\s(?P<ano>\d{1,4})\s(?P<hora>\d{1,2}):(?P<minutos>\d{2})\s(?P<franja>AM|PM))"
+f_formato3 = r"(?P<formato3>(?P<hora>\d{2}):(?P<minutos>\d{2}):(?P<segundos>\d{2})\s(?P<dia>\d{2})/(?P<mes>\d{2})/(?P<ano>\d{4}))"
+er_tiempo = regex.compile(f'{f_formato1}|{f_formato2}|{f_formato3}')
+
 class FechaYHora:
 
-    f_formato1 = r"(?P<formato1>(?P<ano>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})\s(?P<hora>\d{2}):(?P<minutos>\d{2}))"
-    f_formato2 = r"(?P<formato2>(?P<mes>[A-Z][a-z]+)\s(?P<dia>\d{1,2}),\s(?P<ano>\d{1,4})\s(?P<hora>\d{1,2}):(?P<minutos>\d{2})\s(?P<franja>AM|PM))"
-    f_formato3 = r"(?P<formato3>(?P<hora>\d{2}):(?P<minutos>\d{2}):(?P<segundos>\d{2})\s(?P<dia>\d{2})/(?P<mes>\d{2})/(?P<ano>\d{4}))"
-    er_tiempo = regex.compile(f'{f_formato1}|{f_formato2}|{f_formato3}')
 
     def __init__(self):
         self.año = 0
@@ -49,13 +50,15 @@ class FechaYHora:
                     self.hora = match['hora']
                     self.minutos = match['minutos']
                     self.validada = True
+    def formato1(self):
+        return f"{self.año}-{self.mes}-{self.dia} {self.hora}:{self.minutos}"
 
     @staticmethod
     def fecha_valida(cadena):
         match = er_tiempo.fullmatch(cadena)
         if match:
             if match['formato1']:
-                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], self.segundos)
+                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], 0)
 
             if match['formato2']:
                 if match['franja'] == "PM":

@@ -1,9 +1,10 @@
 import regex
 
+er_dni1 = r"(?P<formato1>(?P<num>\d{8})(?P<letra>[A-Z]))"
+er_dni2 = r"(?P<formato2>(?P<letra>[A-Z])-(?P<num>\d{8}))"
+re_dni = regex.compile(f'{er_dni1}|{er_dni2}')
+
 class DNI:
-    er_dni1 = r"(?P<formato1>(?P<num>\d{8})(?P<letra>[A-Z]))"
-    er_dni2 = r"(?P<formato2>(?P<letra>[A-Z])-(?P<num>\d{8}))"
-    re_dni = regex.compile(f'{er_dni1}|{er_dni2}')
     def __init__(self):
         self.numero = ''
         self.letra = ''
@@ -37,5 +38,5 @@ class DNI:
     @staticmethod
     def dni_valido(dni):
         match = re_dni.fullmatch(dni)
-        return m and m['letra'] == DNI.letra_dni(m['num'])
+        return match and match['letra'] == DNI.letra_dni(match['num'])
 

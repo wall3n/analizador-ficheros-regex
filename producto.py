@@ -1,10 +1,11 @@
 import regex
 
+er_nombre = r"\p{L}+"
+er_precio = r"\d+,?\d*€"
+re_nombre = regex.compile(er_nombre)
+re_precio = regex.compile(er_precio)
+
 class Producto:
-    er_nombre = r"\p{L}+"
-    er_precio = r"\d+,?\d*€"
-    re_nombre = regex.compile(er_nombre)
-    re_precio = regex.compile(er_precio)
 
     @staticmethod
     def validar_nombre_producto(producto):
