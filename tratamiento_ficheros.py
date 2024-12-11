@@ -6,7 +6,7 @@ from fecha_y_hora import FechaYHora
 from coordenadas import Coordenadas
 from producto import Producto
 
-re_linea = regex.compile(r"(.*)\s*;\s*(.*)\*;\s*(.*)\s*;\s*(.*)\s*;\s*(.*)\s*;\s*(.*)\n?")
+re_linea = regex.compile(r"(.*); *(.*); *(.*); *(.*); *(.*); *(.*)\n?")
 
 class GestorFicheros:
 
@@ -50,6 +50,7 @@ class GestorFicheros:
                     print(f'Linea {indice} incorrecta')
                 else:
                     lineas_validadas.append(linea_validada)
+            return lineas_validadas
         except error:
             print(error)
             print(f'Error leyendo {archivo}')
