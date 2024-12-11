@@ -1,8 +1,8 @@
 import regex
 
-f_formato1 = r"(?P<formato1>(?P<ano>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})\s(?P<hora>\d{2}):(?P<minutos>\d{2}))"
-f_formato2 = r"(?P<formato2>(?P<mes>[A-Z][a-z]+)\s(?P<dia>\d{1,2}),\s(?P<ano>\d{1,4})\s(?P<hora>\d{1,2}):(?P<minutos>\d{2})\s(?P<franja>AM|PM))"
-f_formato3 = r"(?P<formato3>(?P<hora>\d{2}):(?P<minutos>\d{2}):(?P<segundos>\d{2})\s(?P<dia>\d{2})/(?P<mes>\d{2})/(?P<ano>\d{4}))"
+f_formato1 = r"(?P<formato1>(?P<ano>\d{4})-(?P<mes>\d{2})-(?P<dia>\d{2})\s(?P<hora>\d{2}):(?P<minutos>\d{2}))\s*"
+f_formato2 = r"(?P<formato2>(?P<mes>[A-Z][a-z]+)\s(?P<dia>\d{1,2}),\s(?P<ano>\d{1,4})\s(?P<hora>\d{1,2}):(?P<minutos>\d{2})\s(?P<franja>AM|PM|am|pm))\s*"
+f_formato3 = r"(?P<formato3>(?P<hora>\d{2}):(?P<minutos>\d{2}):(?P<segundos>\d{2})\s(?P<dia>\d{2})/(?P<mes>\d{2})/(?P<ano>\d{4}))\s*"
 er_tiempo = regex.compile(f'{f_formato1}|{f_formato2}|{f_formato3}')
 
 class FechaYHora:
@@ -22,36 +22,39 @@ class FechaYHora:
         if match:
             if match['formato1']:
                 if FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], self.segundos):
-                    self.año = match['ano']
-                    self.mes = match['mes']
-                    self.dia = match['dia']
-                    self.hora = match['hora']
-                    self.minutos = match['minutos']
+                    self.año = int(match['ano'])
+                    self.mes = int(match['mes'])
+                    self.dia = int(match['dia'])
+                    self.hora = int(match['hora'])
+                    self.minutos = int(match['minutos'])
                     self.validada = True
 
             if match['formato2']:
-                if match['franja'] == "PM":
-                    match['hora'] += 12
-                match['mes'] = FechaYHora.transformar_mes_int(match['mes'])
+                hora = int(match['hora'])
+                if match['franja'].upper() == "PM":
+                    hora += 12
+                mes = FechaYHora.transformar_mes_int(match['mes'])
 
-                if FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], self.segundos):
-                    self.año = match['ano']
-                    self.mes = match['mes']
-                    self.dia = match['dia']
-                    self.hora = match['hora']
-                    self.minutos = match['minutos']
+                if FechaYHora.fecha_correcta(match['ano'], mes, match['dia']) and FechaYHora.hora_correcta(hora, match['minutos'], self.segundos):
+                    self.año = int(match['ano'])
+                    self.mes = mes
+                    self.dia = int(match['dia'])
+                    self.hora = hora
+                    self.minutos = int(match['minutos'])
                     self.validada = True
                     
             if match['formato3']:
                 if FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], match['segundos']):
-                    self.año = match['ano']
-                    self.mes = match['mes']
-                    self.dia = match['dia']
-                    self.hora = match['hora']
-                    self.minutos = match['minutos']
+                    self.año = int(match['ano'])
+                    self.mes = int(match['mes'])
+                    self.dia = int(match['dia'])
+                    self.hora = int(match['hora'])
+                    self.minutos = int(match['minutos'])
                     self.validada = True
     def formato1(self):
-        return f"{self.año}-{self.mes}-{self.dia} {self.hora}:{self.minutos}"
+        return f"{self.año}-{self.mes}-{self.dia} {self.hora}:{self.minutos} "
+    def compare(self, fecha):
+        return FechaYHora.compara_fechas(self.año, self.mes, self.dia, self.hora, self.minutos, self.segundos, fecha.año, fecha.mes, fecha.dia, fecha.hora, fecha.minutos, fecha.segundos)  
 
     @staticmethod
     def fecha_valida(cadena):
@@ -61,10 +64,11 @@ class FechaYHora:
                 return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], 0)
 
             if match['formato2']:
-                if match['franja'] == "PM":
-                    match['hora'] += 12
-                match['mes'] = FechaYHora.transformar_mes_int(match['mes'])
-                return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], 0)
+                hora = int(match['hora'])
+                if match['franja'].upper() == "PM":
+                    hora += 12
+                mes = FechaYHora.transformar_mes_int(match['mes'])
+                return FechaYHora.fecha_correcta(match['ano'], mes, match['dia']) and FechaYHora.hora_correcta(hora, match['minutos'], 0)
                     
             if match['formato3']:
                 return FechaYHora.fecha_correcta(match['ano'], match['mes'], match['dia']) and FechaYHora.hora_correcta(match['hora'], match['minutos'], match['segundos'])
@@ -75,6 +79,9 @@ class FechaYHora:
         return año % 4 == 0 and (not(año % 100 == 0) or año % 400 == 0)
     @staticmethod
     def fecha_correcta(año, mes, dia):
+        año = int(año)
+        mes = int(mes)
+        dia = int(dia)
         if(año < 0):
             return False
         if(mes < 0 or 12 < mes):
@@ -93,6 +100,9 @@ class FechaYHora:
 
     @staticmethod
     def hora_correcta(hora,minuto,segundo):
+        hora = int(hora)
+        minuto = int(minuto)
+        segundo = int (segundo)
         if(hora < 0 or 24 < hora):
             return False
         if(minuto < 0 or not (minuto < 60)):
@@ -103,7 +113,7 @@ class FechaYHora:
 
     @staticmethod
     def transformar_mes_int(mes):
-        meses = ["january", "february", "march", "april", "june", "july", "august", "september", "november", "december"]
+        meses = ["january", "february", "march", "april", "may", "june", "july", "august", "september", "november", "december"]
         return meses.index(str(mes).lower()) + 1 
 
     @staticmethod
