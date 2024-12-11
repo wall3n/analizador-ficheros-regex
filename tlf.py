@@ -1,6 +1,6 @@
 import regex
 
-tlf1 = r"(\d{3})\s(\d{3})\s(\d{3})"
+tlf1 = r"(\d{3})\s(\d{3})\s(\d{3})\s*"
 re_tlf = regex.compile(tlf1)
 
 class TLF:
@@ -21,5 +21,10 @@ class TLF:
             return True
         else:
             return False
+    @staticmethod
+    def is_equal(tlf1, tlf2):
+        m1 = re_tlf.fullmatch(tlf1)
+        m2 = re_tlf.fullmatch(tlf2)
+        return m1[1] == m2[1] and m1[2] == m2[2] and m1[3] == m2[3]
 
 
