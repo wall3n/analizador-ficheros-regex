@@ -1,7 +1,7 @@
 import regex
 
-er_nombre = r"\p{L}+"
-er_precio = r"\d+,?\d*€"
+er_nombre = r"\p{L}+\s*"
+er_precio = r"(\d+[,\.]?\d*€)\s*"
 re_nombre = regex.compile(er_nombre)
 re_precio = regex.compile(er_precio)
 
