@@ -47,22 +47,22 @@ class Coordenadas:
 
                 self.segundosX = restoS * 60.00
             if match['formato2']:
-                self.gradosX = match['grados1']
-                self.minutosX = match['minutos1']
-                self.segundosX = match['segundos1']
+                self.gradosX = int(match['grados1'])
+                self.minutosX = int(match['minutos1'])
+                self.segundosX = float(match['segundos1'])
                 self.orientacionX = match['orientacion1']
-                self.gradosY = match['grados']
-                self.minutosY = match['minutos']
-                self.segundosY = match['segundos']
+                self.gradosY = int(match['grados'])
+                self.minutosY = int(match['minutos'])
+                self.segundosY = float(match['segundos'])
                 self.orientacionY = match['orientacion']
             if match['formato3']:
-                self.gradosX = match['grados1']
-                self.minutosX = match['minutos1']
-                self.segundosX = match['segundos1']
+                self.gradosX = int(match['grados1'])
+                self.minutosX = int(match['minutos1'])
+                self.segundosX = float(match['segundos1'])
                 self.orientacionX = match['orientacion1']
-                self.gradosY = match['grados']
-                self.minutosY = match['minutos']
-                self.segundosY = match['segundos']
+                self.gradosY = int(match['grados'])
+                self.minutosY = int(match['minutos'])
+                self.segundosY = float(match['segundos'])
                 self.orientacionY = match['orientacion']
     def formato_gps(self):
         resto, modulo = math.modf(float(self.segundosY))
@@ -72,6 +72,27 @@ class Coordenadas:
         resto = f'{resto:.4f}'
         longitud = f'{str(self.gradosX).zfill(3)}{str(self.minutosX).zfill(2)}{str(int(modulo)).zfill(2)}.{resto[2:]}{self.orientacionX.upper()}'
         return f'{latitud}{longitud} ' 
+
+    def distancia_entre_coordenadas(self, coordenada):
+        R = 6378
+        latitud1 = float(self.gradosY + (self.minutosY + self.segundosY/60.00) / 60.00)
+        latitud1 = latitud1 if self.orientacionY == "N" else -latitud1
+        longitud1 = float(self.gradosX + (self.minutosX + self.segundosX/60.00) / 60.00)
+        longitud1 = longitud1 if self.orientacionX == "E" else -longitud1
+
+        latitud2 = float(coordenada.gradosY + (coordenada.minutosY + coordenada.segundosY/60.00) / 60.00)
+        latitud2 = latitud2 if coordenada.orientacionY == "N" else -latitud2
+        longitud2 = float(coordenada.gradosX + (coordenada.minutosX + coordenada.segundosX/60.00) / 60.00)
+        longitud2 = longitud2 if coordenada.orientacionX == "E" else -longitud2 
+        
+        dif_lon = math.radians(longitud2 - longitud1)
+        dif_lat = math.radians(latitud2 - latitud1)
+        
+        h = (math.sin(dif_lat/2) ** 2) + math.cos(math.radians(latitud1)) * math.cos(math.radians(latitud2)) * (math.sin(dif_lon/2) ** 2)
+        d = 2 * R * math.asin(math.sqrt(h))
+        
+        return d
+
     @staticmethod
     def coordenada_valida(coordenada):
         match = re_coordenadas.fullmatch(coordenada)
