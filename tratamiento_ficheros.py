@@ -1,4 +1,3 @@
-from os import error
 import regex
 from tlf import TLF
 from dni import DNI 
@@ -9,11 +8,15 @@ from producto import Producto
 re_linea = regex.compile(r"(.*); *(.*); *(.*); *(.*); *(.*); *(.*)\n?")
 
 class GestorFicheros:
+    """
+    Clase que gestiona la apertura de ficheros y la validacion de linea
+    """
 
-    def __init__(self):
-        self.archivo = ""
-
-
+    """
+    Precondición: linea debe ser una cadena de texto que siga el patrón de la expresión regular
+    Efecto: si la linea es válida separa sus elementos, los valida individualmente y los devuelve en un diccionario con claves
+    Resultado: un diccionario que asocia cada clave con el valor de la linea
+    """
     @staticmethod
     def validar_linea(linea):
         m = re_linea.fullmatch(linea)
@@ -39,6 +42,11 @@ class GestorFicheros:
             else:
                 return "Error en la validación de uno o más campos"
 
+    """
+    Precondición: fichero debe de ser un nombre de archivo válido existente
+    Efecto: Si el archivo válido lo recorre validando cada linea y guardando las líneas válidas en un array
+    Resultado: Un array con las lineas válidas
+    """
     @staticmethod
     def validar_fichero(fichero): 
         try:
@@ -51,8 +59,7 @@ class GestorFicheros:
                 else:
                     lineas_validadas.append(linea_validada)
             return lineas_validadas
-        except error:
-            print(error)
+        except:
             print(f'Error leyendo {archivo}')
             exit(2)
 
