@@ -9,6 +9,9 @@ re_coordenadas = regex.compile(f'{er_formato1}|{er_formato2}|{er_formato3}')
 # Latitud Y Longitud X
 
 class Coordenadas:
+    """
+    Clase que representa coordenadas, las valida y las compara
+    """
     
     def __init__(self):
         self.gradosX = 0
@@ -21,6 +24,11 @@ class Coordenadas:
         self.orientacionY = ""
         self.validado = False
 
+    """
+    Precondicion: coordenada ha de ser una cadena que contenga una coordenada valida
+    Efecto: valida la coordenada en sus distintos formatos y la almacena en formarto sexagesimal
+    Resultado: Este metodo no devuelve nada ya que modifica los atributos de clase
+    """
     def validar_coordenada(self, coordenada):
         if Coordenadas.coordenada_valida(coordenada):
             match = re_coordenadas.fullmatch(coordenada)
@@ -64,6 +72,11 @@ class Coordenadas:
                 self.minutosY = int(match['minutos'])
                 self.segundosY = float(match['segundos'])
                 self.orientacionY = match['orientacion']
+    """
+    Precondicion: los atributos de la clase han de estar correctamente rellenados
+    Efecto: Transforma los artributos de clase en el formato gps
+    Resultado: Retorna una cadena con la coordenada en formato gps
+    """
     def formato_gps(self):
         resto, modulo = math.modf(float(self.segundosY))
         resto = f'{resto:.4f}'
@@ -73,6 +86,11 @@ class Coordenadas:
         longitud = f'{str(self.gradosX).zfill(3)}{str(self.minutosX).zfill(2)}{str(int(modulo)).zfill(2)}.{resto[2:]}{self.orientacionX.upper()}'
         return f'{latitud}{longitud} ' 
 
+    """
+    Precondicion: coordenada ha de ser un objeto coordenada valido
+    Efecto: Usando la formula de haversine calcula la distancia entre ambas coordenadas
+    Resultado: Retorna la distancia entre ambas coordenadas en kilometros
+    """
     def distancia_entre_coordenadas(self, coordenada):
         R = 6378
         latitud1 = float(self.gradosY + (self.minutosY + self.segundosY/60.00) / 60.00)
@@ -93,6 +111,11 @@ class Coordenadas:
         
         return d
 
+    """
+    Precondicion: la coordenada ha de ser una cadena de texto con una coordenada en un formato valido
+    Efecto: Comprueba si la coordenada es valida y cumple alguno de los formatos descritos
+    Resultado: Retorna la validez de la coordenada
+    """
     @staticmethod
     def coordenada_valida(coordenada):
         match = re_coordenadas.fullmatch(coordenada)
